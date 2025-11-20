@@ -44,7 +44,7 @@ jobs:
         dotnet tool install --global dotnet-sonarscanner || true
         echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
 
-    - name: Begin SonarCloud analysis (optional)
+    - name: Begin SonarCloud analysis (only if token)
       id: sonar-begin
       run: |
         if [ -z "${SONAR_TOKEN}" ]; then
@@ -59,20 +59,19 @@ jobs:
           echo "enabled=true" >> $GITHUB_OUTPUT
         fi
 
-    - name: Build solution (will not fail the job)
+    - name: Build solution (do not fail the job if build fails)
       run: |
         set -o pipefail
         dotnet build "${{ steps.find-sln.outputs.sln }}" --configuration Release --no-restore || true
-      # keep the job green even if build fails; user requested Actions run without changing code
 
-    - name: End SonarCloud analysis (optional)
+    - name: End SonarCloud analysis (only if started)
       if: steps.sonar-begin.outputs.enabled == 'true'
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
         dotnet-sonarscanner end /d:sonar.login="${SONAR_TOKEN}" || echo "sonar end failed but continuing"
 
-    - name: Upload build logs (optional, useful for debugging)
+    - name: Upload build logs (for debugging)
       if: always()
       uses: actions/upload-artifact@v4
       with:
