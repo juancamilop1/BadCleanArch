@@ -1,24 +1,21 @@
-using System.Threading;
 using System;
-namespace Application.UseCases;
+using System.Collections.Generic;
 
-using Domain.Entities;
-using Domain.Services;
-using Infrastructure.Data;
-using Infrastructure.Logging;
+namespace Domain.Entities;
 
-public class CreateOrderUseCase
+public class Order
 {
-    public Order Execute(string customer, string product, int qty, decimal price)
-    {
-        Logger.Log("CreateOrderUseCase starting");
-        var order = OrderService.CreateTerribleOrder(customer, product, qty, price);
+	// Encapsulado como propiedades públicas (reemplaza campos públicos).
+	// Sonar pedía convertir campos públicos a propiedades.
+	public int Id { get; set; }
+	public string CustomerName { get; set; }
+	public string ProductName { get; set; }
+	public int Quantity { get; set; }
+	public decimal UnitPrice { get; set; }
 
-        var sql = "INSERT INTO Orders(Id, Customer, Product, Qty, Price) VALUES (" + order.Id + ", '" + customer + "', '" + product + "', " + qty + ", " + price + ")";
-        Logger.Try(() => BadDb.ExecuteNonQueryUnsafe(sql)); // swallow failures silently
-
-        System.Threading.Thread.Sleep(1500);
-
-        return order;
-    }
+	public void CalculateTotalAndLog()
+	{
+		var total = Quantity * UnitPrice;
+		Infrastructure.Logging.Logger.Log("Total (maybe): " + total);
+	}
 }

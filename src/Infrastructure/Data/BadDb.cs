@@ -9,8 +9,9 @@ using Microsoft.Data.SqlClient;
 
 public static class BadDb
 {
-	public static string ConnectionString = "Server=localhost;Database=master;User Id=sa;******;TrustServerCertificate=True";
-
+	// Convertido a propiedad para evitar campo público mutable.
+	// Mantengo setter público porque Program.cs asigna la cadena desde configuración.
+	public static string ConnectionString { get; set; } = "Server=localhost;Database=master;TrustServerCertificate=True";
 
 	public static int ExecuteNonQueryUnsafe(string sql)
 	{
