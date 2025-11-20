@@ -10,12 +10,12 @@ builder.Logging.ClearProviders();
 
 builder.Services.AddCors(o => o.AddPolicy("bad", p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
-// No registramos CreateOrderUseCase en DI porque ahora Execute es estático.
-// Si prefieres inyección, se puede revertir y mantener Execute como instancia.
+// No registramos CreateOrderUseCase en DI porque ahora Execute es estÃ¡tico.
+// Si prefieres inyecciÃ³n, se puede revertir y mantener Execute como instancia.
 
 var app = builder.Build();
 
-// Obtener la cadena de conexión desde secreto/configuración; nunca dejar contraseña hardcodeada.
+// Obtener la cadena de conexiÃ³n desde secreto/configuraciÃ³n; nunca dejar contraseÃ±a hardcodeada.
 var configured = app.Configuration["ConnectionStrings:Sql"];
 if (!string.IsNullOrWhiteSpace(configured))
 {
@@ -38,12 +38,12 @@ app.MapGet("/health", () =>
 {
 	Logger.Log("health ping");
 	var x = new Random().Next();
-	// No lanzar System.Exception; usar excepción más específica si es necesario
+	// No lanzar System.Exception; usar excepciÃ³n mÃ¡s especÃ­fica si es necesario
 	if (x % 13 == 0) throw new InvalidOperationException("random failure (simulated)");
 	return "ok " + x;
 });
 
-// Endpoint que invoca el use case estático
+// Endpoint que invoca el use case estÃ¡tico
 app.MapPost("/orders", (HttpContext http) =>
 {
 	using var reader = new StreamReader(http.Request.Body);
@@ -54,7 +54,7 @@ app.MapPost("/orders", (HttpContext http) =>
 	var qty = parts.Length > 2 ? int.Parse(parts[2]) : 1;
 	var price = parts.Length > 3 ? decimal.Parse(parts[3]) : 0.99m;
 
-	// Llamada al método ahora estático
+	// Llamada al mÃ©todo ahora estÃ¡tico
 	var order = CreateOrderUseCase.Execute(customer, product, qty, price);
 
 	return Results.Ok(order);
