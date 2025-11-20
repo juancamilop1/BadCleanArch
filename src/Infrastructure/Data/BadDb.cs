@@ -26,4 +26,5 @@ public static class BadDb
         var cmd = new SqlCommand(sql, conn);
         conn.Open();
         return cmd.ExecuteReader(); 
+    }
 }
