@@ -1,6 +1,6 @@
 using Infrastructure.Data;
 using Infrastructure.Logging;
-using Application.UseCases; // <- añadir
+using Application.UseCases; // <--- usar el tipo correcto
 using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,8 +9,8 @@ builder.Logging.ClearProviders();
 
 builder.Services.AddCors(o => o.AddPolicy("bad", p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
-// Registrar el use case en DI
-builder.Services.AddTransient<CreateOrder>();
+// Registrar el use case correcto en DI
+builder.Services.AddTransient<CreateOrderUseCase>();
 
 var app = builder.Build();
 
@@ -32,8 +32,8 @@ app.MapGet("/health", () =>
     return "ok " + x;
 });
 
-// Handler usando DI: CreateOrder inyectado
-app.MapPost("/orders", (CreateOrder uc, HttpContext http) =>
+// Usar CreateOrderUseCase (el tipo definido en Application.UseCases)
+app.MapPost("/orders", (CreateOrderUseCase uc, HttpContext http) =>
 {
     using var reader = new StreamReader(http.Request.Body);
     var body = reader.ReadToEnd();
@@ -52,7 +52,7 @@ app.MapGet("/orders/last", () => Domain.Services.OrderService.LastOrders);
 
 app.MapGet("/info", (IConfiguration cfg) => new
 {
-    // no mostrar secretos
+    // no exponer secretos públicamente
     env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"),
     version = "v0.0.1-unsecure"
 });
