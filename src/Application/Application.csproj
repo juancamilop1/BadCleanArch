@@ -1,5 +1,5 @@
 {
   "filePath": "d:\\Parcial\\src\\Application\\Application.csproj",
-  "oldString": "<Project Sdk=\"Microsoft.NET.Sdk\">\n  <PropertyGroup>\n    <TargetFramework>net8.0</TargetFramework>\n    <Nullable>disable</Nullable>\n    <ImplicitUsings>disable</ImplicitUsings>\n  </PropertyGroup>\n\n  <!-- BAD: Application knows about Web layer and Infrastructure (more violations) -->\n  <ItemGroup>\n    <ProjectReference Include=\"..\\WebApi\\WebApi.csproj\" />\n    <ProjectReference Include=\"..\\Infrastructure\\Infrastructure.csproj\" />\n  </ItemGroup>\n</Project>",
-  "newString": "<Project Sdk=\"Microsoft.NET.Sdk\">\n  <PropertyGroup>\n    <TargetFramework>net8.0</TargetFramework>\n    <Nullable>enable</Nullable>\n    <ImplicitUsings>enable</ImplicitUsings>\n  </PropertyGroup>\n\n  <ItemGroup>\n    <ProjectReference Include=\"..\\Domain\\Domain.csproj\" />\n    <ProjectReference Include=\"..\\Infrastructure\\Infrastructure.csproj\" />\n  </ItemGroup>\n</Project>"
+  "oldString": "  <!-- BAD: Application knows about Web layer and Infrastructure (more violations) -->\n  <ItemGroup>\n    <ProjectReference Include=\"..\\WebApi\\WebApi.csproj\" />\n    <ProjectReference Include=\"..\\Infrastructure\\Infrastructure.csproj\" />\n  </ItemGroup>",
+  "newString": "  <ItemGroup>\n    <ProjectReference Include=\"..\\Domain\\Domain.csproj\" />\n    <ProjectReference Include=\"..\\Infrastructure\\Infrastructure.csproj\" />\n  </ItemGroup>"
 }
