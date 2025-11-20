@@ -1,5 +1,12 @@
-{
-  "filePath": "d:\\Parcial\\src\\Application\\Application.csproj",
-  "oldString": "  <!-- BAD: Application knows about Web layer and Infrastructure (more violations) -->\n  <ItemGroup>\n    <ProjectReference Include=\"..\\WebApi\\WebApi.csproj\" />\n    <ProjectReference Include=\"..\\Infrastructure\\Infrastructure.csproj\" />\n  </ItemGroup>",
-  "newString": "  <ItemGroup>\n    <ProjectReference Include=\"..\\Domain\\Domain.csproj\" />\n    <ProjectReference Include=\"..\\Infrastructure\\Infrastructure.csproj\" />\n  </ItemGroup>"
-}
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+  </ItemGroup>
+</Project>
