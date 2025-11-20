@@ -8,32 +8,45 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
-    
+    runs-on: ubuntu-latest
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
-    
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '8.0.x'
-    
+
     - name: Restore dependencies
-      run: dotnet restore
-    
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
-    
-    - name: Install SonarScanner
+      working-directory: ${{ github.workspace }}
+      run: dotnet restore ./BadCleanArch.sln
+
+    - name: Install SonarScanner for .NET
       run: dotnet tool install --global dotnet-sonarscanner
-    
-    - name: SonarCloud Scan
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    - name: Add dotnet tools to PATH
+      run: echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
+
+    - name: Begin SonarCloud analysis
+      working-directory: ${{ github.workspace }}
       run: |
-        dotnet-sonarscanner begin /k:"juancamilop1_BadCleanArch" /o:"juancamilop1" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
-        dotnet build --configuration Release --no-restore
-        dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+        dotnet-sonarscanner begin \
+          /k:"juancamilop1_BadCleanArch" \
+          /o:"juancamilop1" \
+          /d:sonar.host.url="https://sonarcloud.io" \
+          /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+
+    - name: Build solution
+      working-directory: ${{ github.workspace }}
+      run: dotnet build ./BadCleanArch.sln --configuration Release --no-restore
+
+    - name: End SonarCloud analysis
+      working-directory: ${{ github.workspace }}
+      run: dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
